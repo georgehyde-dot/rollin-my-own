@@ -2,12 +2,14 @@ package primal
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
 	"time"
 )
 
 // Function to implement the Miller-Rabin Primality Test
-func isPrime(n int, k int) bool {
+func isPrime(a float64, k int) bool {
+	n := int(a)
 	fmt.Printf("Testing %d for primality\n", n)
 
 	if n == 2 || n == 3 {
@@ -81,9 +83,10 @@ func FindPrime(maxTimeSeconds int) (int, func()) {
 	}()
 	go func() {
 		for {
-			check := rand.Int()
-			if isPrime(check, 16) {
-				ans <- check
+			// more likely to be prime with the form 2^n - 1
+			check := math.Pow(2.0, 79601.0*(rand.Float64())) - 1
+			if isPrime(check, 16) && check > 79601 {
+				ans <- int(check)
 			}
 		}
 	}()
